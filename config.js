@@ -1,5 +1,5 @@
 config = {
-    port: 8008,
+    port: 9696,
     externalApi: 'https://api.softlotto.com',
     api_token: '',
     api_registration: {
@@ -9,18 +9,19 @@ config = {
     },
     api_login: {
         url: '/api/customer/site/',
-        file: '/register.json',
+        file: '/login.json',
         method: 'POST'
     },
     api_user_edit: {
         url: '/api/customer/site/',
-        file: '/register.json',
+        file: '/edit.json',
+        user_token: '/token/',
         method: 'POST'
     },
     api_lottaries: {
-        url: '/api/customer/site/',
-        file: '/register.json',
-        method: 'POST'
+        url: '/api/lotteries/site/',
+        file: '/list.json',
+        method: 'GET'
     }
 };
 

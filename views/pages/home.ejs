@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<% include ../partials/head %>
+</head>
+<header>
+</header>
+
+<body>
+	<h1 style="text-align: left;margin-left:  10px;margin-top: -30px; color: #2b7bca">Hello <%=user.name%>, Balance: <%=user.balance%></h1>
+	<div class="container">
+		<input id="toggle" type="checkbox">
+		<label class="toggle-container" for="toggle">
+			<span class="button button-toggle"></span>
+		</label>
+		<nav class="nav">
+				<a class="nav-item" href="home">Home</a>
+				<a class="nav-item" href="user">Edit Account</a>
+				<a class="nav-item" href="/">Log out</a>
+		</nav>
+	</div>
+</body>
+
+</html>
