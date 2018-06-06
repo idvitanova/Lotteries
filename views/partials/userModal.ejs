@@ -1,0 +1,31 @@
+<!-- Modal content -->
+<div class="modal-content">
+    <span class="close">&times;</span>
+    <p>Edit Account..</p>
+    <form action="user" method="POST" class="form login">
+        <div class="form__field">
+            <label for="login__email">
+                <svg class="icon">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use>
+                </svg>
+                <span class="hidden">Email</span>
+            </label>
+            <input id="login__email" type="text" name="email" class="form__input" placeholder="Email" required>
+        </div>
+        <div class="form__field">
+            <label for="login__password">
+                <svg class="icon">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#lock"></use>
+                </svg>
+                <span class="hidden">Password</span>
+            </label>
+            <input id="login__password" type="password" name="pass" class="form__input" placeholder="Password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?#&])[A-Za-z\d$@$!%*?#&]{7,16}"
+                title="The password must have at least one uppercase letter, one lowercase letter, one number, one special character and must have a length of 7 - 16!"
+                required>
+        </div>
+
+        <div class="form__field">
+            <input type="submit" value="Save" style="background: #24262b">
+        </div>
+    </form>
+</div>
