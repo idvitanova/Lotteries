@@ -2,26 +2,45 @@
 <div class="modal-content">
     <span class="close">&times;</span>
     <p>Edit Account..</p>
-    <form action="user" method="POST" class="form login">
+    <form action="/user" method="POST" class="form login">
         <div class="form__field">
             <label for="login__email">
                 <svg class="icon">
                     <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use>
                 </svg>
-                <span class="hidden">Email</span>
+                <span>First Name</span>
             </label>
-            <input id="login__email" type="text" name="email" class="form__input" placeholder="Email" required>
+            <input id="login__email" type="text" name="name_first" value="<%=user.name_first%>" class="form__input" placeholder="First Name"
+                required>
         </div>
         <div class="form__field">
-            <label for="login__password">
+            <label for="login__email">
                 <svg class="icon">
-                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#lock"></use>
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use>
                 </svg>
-                <span class="hidden">Password</span>
+                <span>Last Name</span>
             </label>
-            <input id="login__password" type="password" name="pass" class="form__input" placeholder="Password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?#&])[A-Za-z\d$@$!%*?#&]{7,16}"
-                title="The password must have at least one uppercase letter, one lowercase letter, one number, one special character and must have a length of 7 - 16!"
+            <input id="login__email" type="text" name="name_last" value="<%=user.name_last%>" class="form__input" placeholder="Last Name"
                 required>
+        </div>
+
+        <div class="form__field">
+            <label for="login__email">
+                <svg class="icon">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use>
+                </svg>
+                <span>Email</span>
+            </label>
+            <input id="login__email" type="email" name="email" value="<%=user.email%>" class="form__input" placeholder="Email" required>
+        </div>
+        <div class="form__field">
+            <label for="login__email">
+                <svg class="icon">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use>
+                </svg>
+                <span>Phone</span>
+            </label>
+            <input id="login__email" type="text" name="phone" value="<%=user.phone%>" class="form__input" placeholder="Phone" required>
         </div>
 
         <div class="form__field">

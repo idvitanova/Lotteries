@@ -7,7 +7,7 @@
 
 <body>
 	<h1 style="text-align: left;margin-left:  10px;margin-top: -30px; color: #2b7bca">Hello
-		<%=user.name%>, Balance:
+		<%=user.userName%>, Balance:
 			<%=user.balance%>
 	</h1>
 	<div class="container">
@@ -18,7 +18,7 @@
 		<nav class="nav">
 			<a class="nav-item" href="home">Home</a>
 			<a class="nav-item" id="myBtn" href="#">Edit Account</a>
-			<a class="nav-item" href="/">Log out</a>
+			<a class="nav-item" href="/logout">Log out</a>
 		</nav>
 	</div>
 	<div class="tab">
@@ -34,34 +34,42 @@
 	</div>
 
 	<div class="tabcontent">
-		<table>
-			<tr>
-				<th>Name</th>
-				<th>Next draw</th>
-				<th>Price</th>
-				<th>Currency</th>
-				<th>Jackpot</th>
-			</tr>
-			<%for(i=0;i<lotteries.length;i++){%>
+		<table id="example" class="display" style="width:100%">
 
+			<thead>
 				<tr>
-					<td>
-						<%=lotteries[i].name%>
-					</td>
-					<td>
-						<%=lotteries[i].next_draw%>
-					</td>
-					<td>
-						<%=lotteries[i].price_share%>
-					</td>
-					<td>
-						<%=lotteries[i].currency%>
-					</td>
-					<td>
-						<%=lotteries[i].jackpot%>
-					</td>
+					<th>Type</th>
+					<th>Name</th>
+					<th>Next draw</th>
+					<th>Price</th>
+					<th>Currency</th>
+					<th>Jackpot</th>
 				</tr>
-				<%}%>
+			</thead>
+			<tbody>
+				<%for(i=0;i<lotteries.length;i++){%>
+
+					<tr>
+						<td>
+							<%=tabName%>
+						</td>
+						<td>
+							<%=lotteries[i].name%>
+						</td>
+						<td>
+							<%=lotteries[i].next_draw%>
+						</td>
+						<td>
+							<%=lotteries[i].price_share%>
+						</td>
+						<td>
+							<%=lotteries[i].currency%>
+						</td>
+						<td>
+							<%=lotteries[i].jackpot%>
+						</td>
+					</tr>
+					<%}%>
 		</table>
 	</div>
 	<script>

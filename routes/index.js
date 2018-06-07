@@ -1,61 +1,94 @@
 const express = require('express');
 const router = express.Router();
+const url = require('url');
 var request = require('request');
 var data = {
     message: "",
-    user: {
-        name: "Iliyana",
-        balance: "500"
+    tabName: ''
+}
+
+
+var sessionChecker = (req, res, next) => {
+    if (req.session.user && req.cookies.user_sid) {
+        res.redirect('/home');
+    } else {
+        next();
     }
 }
-router.get('/', (req, res) => {
-    data.message = '';
 
+router.get('/', sessionChecker, (req, res) => {
+    data.message = '';
     res.render('../views/pages/index');
 });
-router.get('/home', (req, res) => {
-    data.message = '';
-    data.lotteries = {};
 
-    res.render('../views/pages/home', data);
+router.get('/home', (req, res) => {
+    data = req.query;
+    data.lotteries = {};
+    data.message = '';
+    data.tabName = '';
+    if (req.session.user && req.cookies.user_sid) {
+        data.user = req.session.user;
+        res.render('../views/pages/home', data);
+    } else {
+        res.redirect('/');
+    }
 });
 
 router.get('/home/:variant', (req, res) => {
-    data.message = '';
-    data.tabCode = req.params.variant;
-    var options = {
-        url: config.externalApi + config.api_lottaries.url + config.api_token + '/variant/' + req.params.variant + config.api_lottaries.file,
-        method: 'GET'
-    }
-
-    request(options.url, function (error, response, body) {
-        body = JSON.parse(body);
-        if (body.status == 200 && body.data) {
-            body.data.forEach(function (element, index) {
-                body.data[index].name = (element.name == null || element.name == undefined) ? '-' : element.name;
-                body.data[index].next_draw = (element.next_draw == null || element.next_draw == undefined) ? '-' : element.next_draw;
-                body.data[index].price_share = (element.price_share == null || element.price_share == undefined) ? '-' : element.price_share;
-                body.data[index].currency = (element.currency == null || element.currency == undefined) ? '-' : element.currency;
-                body.data[index].jackpot = (element.jackpot == null || element.jackpot == undefined) ? '-' : element.jackpot;
-            });
-            data.lotteries = body.data;
-            data.pages = body.pages;
+    if (!(req.session.user && req.cookies.user_sid)) {
+        res.redirect('/');
+    } else {
+        data.message = '';
+        data.tabCode = req.params.variant;
+        data.tabName = '';
+        switch(data.tabCode){
+            case '0': data.tabName='Single Games'; break;
+            case '1': data.tabName='Group Games'; break;
+            case '4': data.tabName='Scratch Games'; break;
+            case '5': data.tabName='Combo Group Games'; break;
+            case '6': data.tabName='Instant Win Games'; break;
+            case '0': data.tabName=''; break;
         }
-        res.render('../views/pages/home', data);
-    });
+        var options = {
+            url: config.externalApi + config.api_lottaries.url + config.api_token + '/variant/' + req.params.variant + config.api_lottaries.file,
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }
+
+        request(options.url, function (error, response, body) {
+            body = JSON.parse(body);
+            if (body.status == 200 && body.data) {
+                body.data.forEach(function (element, index) {
+                    body.data[index].name = (element.name == null || element.name == undefined) ? '-' : element.name;
+                    body.data[index].next_draw = (element.next_draw == null || element.next_draw == undefined) ? '-' : element.next_draw;
+                    body.data[index].price_share = (element.price_share == null || element.price_share == undefined) ? '-' : element.price_share;
+                    body.data[index].currency = (element.currency == null || element.currency == undefined) ? '-' : element.currency;
+                    body.data[index].jackpot = (element.jackpot == null || element.jackpot == undefined) ? '-' : element.jackpot;
+                });
+                data.lotteries = body.data;
+                data.pages = body.pages;
+            }
+            res.render('../views/pages/home', data);
+        });
+    }
 });
 
-router.get('/login', (req, res) => {
+router.get('/login', sessionChecker, (req, res) => {
     data.message = '';
+    data.tabName = '';
     res.render('../views/pages/login', data);
-});
-
-router.post('/login', (req, res) => {
+}).post('/login', (req, res) => {
     data.message = '';
+    data.tabName = '';
     var options = {
         url: config.externalApi + config.api_login.url + config.api_token + config.api_login.file,
         method: 'POST',
-        form: { email: req.body.email, pass: req.body.pass }
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        form: { email: req.body.email, pass: req.body.password }
     }
 
     request(options, function (error, response, body) {
@@ -67,31 +100,73 @@ router.post('/login', (req, res) => {
                 case 403: data.message += 'User inactive'; break;
                 case 404: data.message += 'User blocked'; break;
             }
+            res.render('../views/pages/login', data);
         }
         if (!error && body.status == 200) {
-            res.render('../views/pages/home');
+            req.session.user = {
+                userName: body.user.name_first + " " + body.user.name_last,
+                token: body.token,
+                balance: body.deposit.total,
+                email: '',
+                phone: '',
+                name_first: '',
+                name_last: ''
+            };
+            var options = {
+                url: config.externalApi + config.api_user_edit.url + config.api_token + config.api_user_edit.user_token + req.session.user.token + config.api_user_edit.file,
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+
+            request(options, function (error, response, body) {
+                body = JSON.parse(body);
+                if (!error && response.statusCode == 200) {
+                    req.session.user.email = body.user.email;
+                    req.session.user.phone = body.user.phone;
+                    req.session.user.name_first = body.user.name_first;
+                    req.session.user.name_last = body.user.name_last;
+                    res.redirect('/home');
+                }
+            });
+
         }
-        res.render('../views/pages/login', data);
     });
 });
 
-router.get('/register', (req, res) => {
+router.get('/logout', (req, res) => {
     data.message = '';
-    res.render('../views/pages/register', data);
+    if (req.session.user && req.cookies.user_sid) {
+        res.clearCookie('user_sid', { domain: req.session.cookie.data.deposit, path: req.session.cookie.data.path });
+        req.session.destroy();
+    }
+    res.redirect('/');
 });
 
-router.post('/register', (req, res) => {
+router.get('/register', sessionChecker, (req, res) => {
     data.message = '';
+    data.tabName = '';
+    res.render('../views/pages/register', data);
+}).post('/register', (req, res) => {
+    data.message = '';
+    data.tabName = '';
     req.body.accepted_tc = req.body.accepted_tc == 'on' ? 1 : 0;
     req.body.confirmed_minimum_age = req.body.confirmed_minimum_age == 'on' ? 1 : 0;
     var options = {
         url: config.externalApi + config.api_registration.url + config.api_token + config.api_registration.file,
         method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
         form: {
             email: req.body.email,
             password: req.body.pass,
+            name_first: req.body.name_first,
+            name_last: req.body.name_last,
+            phone: req.body.phone,
             accepted_tc: req.body.accepted_tc,
-            confirmed_minimum_age: req.body.confirmed_minimum_age
+            age_confirm: req.body.confirmed_minimum_age
         }
     }
 
@@ -131,35 +206,30 @@ router.post('/register', (req, res) => {
 
 });
 
-router.get('/user', (req, res) => {
+router.post('/user', (req, res) => {
     data.message = '';
     var options = {
-        url: config.externalApi + config.api_registration.url + config.api_token + config.api_registration.file,
+        url: config.externalApi + config.api_user_edit.url + config.api_token + config.api_user_edit.user_token + req.session.user.token + config.api_user_edit.file,
         method: 'POST',
-        // headers: {
-        //     'User-Agent': 'Super Agent/0.0.1',
-        //     'Content-Type': 'application/x-www-form-urlencoded'
-        // },
+        headers: {
+            'Content-Type': 'application/json'
+        },
         form: {
             email: req.body.email,
-            password: req.body.pass,
-            accepted_tc: req.body.accepted_tc == 'on' ? 1 : 0,
-            confirmed_minimum_age: req.body.confirmed_minimum_age == 'on' ? 1 : 0
+            name_first: req.body.name_first,
+            name_last: req.body.name_last,
+            phone: req.body.phone
         }
     }
 
     request(options, function (error, response, body) {
-
         if (!error && response.statusCode == 200) {
-            res.render('../views/pages/login');
-            return body;
+            res.redirect('/home');
         }
     });
-
-    res.render('../views/pages/index', data);
 });
 
-router.post('/user', (req, res) => {
+router.get('/user', (req, res) => {
     data.message = '';
     res.render('../views/pages/index', data);
 });

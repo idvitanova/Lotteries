@@ -1,6 +1,6 @@
 config = {
     port: 9696,
-    externalApi: 'https://api.softlotto.com',
+    externalApi: 'https://api.lottopalace.com',
     api_token: '',
     api_registration: {
         url: '/api/customer/site/',

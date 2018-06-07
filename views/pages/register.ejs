@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<% include ../partials/head %>
 </head>
+
 <body class="align">
 	<div class="grid">
 		<form action="register" method="POST" class="form login">
@@ -11,9 +13,37 @@
 					<svg class="icon">
 						<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use>
 					</svg>
+					<span class="hidden">First Name</span>
+				</label>
+				<input id="login__email" type="text" name="name_first" class="form__input" placeholder="First Name" required>
+			</div>
+			<div class="form__field">
+				<label for="login__email">
+					<svg class="icon">
+						<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use>
+					</svg>
+					<span class="hidden">Last Name</span>
+				</label>
+				<input id="login__email" type="text" name="name_last" class="form__input" placeholder="Last Name" required>
+			</div>
+
+			<div class="form__field">
+				<label for="login__email">
+					<svg class="icon">
+						<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use>
+					</svg>
 					<span class="hidden">Email</span>
 				</label>
-				<input id="login__email" type="text" name="email" class="form__input" placeholder="Email" required>
+				<input id="login__email" type="email" name="email" class="form__input" placeholder="Email" required>
+			</div>
+			<div class="form__field">
+				<label for="login__email">
+					<svg class="icon">
+						<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use>
+					</svg>
+					<span class="hidden">Phone</span>
+				</label>
+				<input id="login__email" type="text" name="phone" class="form__input" placeholder="Phone" required>
 			</div>
 			<div class="form__field">
 				<label for="login__password">
@@ -27,24 +57,13 @@
 				 required>
 			</div>
 			<div class="form__field">
-				<label for="login__password">
-					<svg class="icon">
-						<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#lock"></use>
-					</svg>
-					<span class="hidden">Confirm Password</span>
-				</label>
-				<input id="login__password_c" type="password" name="pass_c" class="form__input" placeholder="Confirm Password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?#&])[A-Za-z\d$@$!%*?#&]{7,16}"
-				 title="The password must have at least one uppercase letter, one lowercase letter, one number, one special character and must have a length of 7 - 16!"
-				 required>
-			</div>
-			<div class="form__field">
 				<label style="background-color: #2c3338">
-					<input type="checkbox" name="accepted_tc" class="form__input" required> Accepted terms and conditions
+					<input type="checkbox" name="accepted_tc" class="form__input" required> Accepted terms and conditions.
 				</label>
 			</div>
 			<div class="form__field">
 				<label style="background-color: #2c3338">
-					<input type="checkbox" name="confirmed_minimum_age" class="form__input" required> Confirmed minimum age
+					<input type="checkbox" name="confirmed_minimum_age" class="form__input" required> I confirm that i am 18 years or older.
 				</label>
 			</div>
 			<p class="text--center" style="color: rgb(219, 127, 127)">
